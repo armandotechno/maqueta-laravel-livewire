@@ -18,14 +18,14 @@
                 <flux:sidebar.group heading="Administración" class="grid">
 
                     {{-- Enlace a la gestión de Usuarios --}}
-                    <flux:sidebar.item icon="users" :href="route('users.manage')" :current="request()->routeIs('users.*')"
-                        wire:navigate>
+                    <flux:sidebar.item icon="users" :href="route('admin.users')"
+                        :current="request()->routeIs('admin.users')" wire:navigate>
                         Usuarios
                     </flux:sidebar.item>
 
                     {{-- Enlace a la gestión de Roles --}}
-                    <flux:sidebar.item icon="shield-check" :href="route('roles.manage')"
-                        :current="request()->routeIs('roles.*')" wire:navigate>
+                    <flux:sidebar.item icon="shield-check" :href="route('admin.roles')"
+                        :current="request()->routeIs('admin.roles')" wire:navigate>
                         Roles y Permisos
                     </flux:sidebar.item>
 

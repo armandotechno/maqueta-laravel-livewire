@@ -13,12 +13,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
 
         // 1. Ruta para la gestión de usuarios (apunta al componente Livewire que creamos)
-        Route::view('/users/manage', 'livewire.users.manage')->name('users.manage');
+        Route::view('usuarios', 'admin.users')->name('admin.users');
 
         // 2. Ruta temporal para la gestión de roles (para que Flux pueda generar el enlace sin errores)
-        Route::get('/roles/manage', function () {
-            return 'Módulo de roles en construcción...';
-        })->name('roles.manage');
+        Route::view('roles', 'admin.roles')->name('admin.roles');
     });
 });
 

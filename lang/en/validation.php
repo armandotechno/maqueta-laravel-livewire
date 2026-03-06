@@ -12,8 +12,7 @@ return [
     | as the size rules. Feel free to tweak each of these messages here.
     |
     */
-
-  'accepted' => 'El campo :attribute debe ser aceptado.',
+    'accepted' => 'El campo :attribute debe ser aceptado.',
     'accepted_if' => 'El campo :attribute debe ser aceptado cuando :other sea :value.',
     'active_url' => 'El campo :attribute debe ser una URL válida.',
     'after' => 'El campo :attribute debe ser una fecha posterior a :date.',
@@ -194,7 +193,7 @@ return [
     |
     */
 
-   'attributes' => [
+    'attributes' => [
         'email' => 'correo electrónico',
         'password' => 'contraseña', // <-- Agrega esta línea
         'name' => 'nombre',

@@ -9,28 +9,13 @@
             @csrf
 
             <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Correo electrónico')"
-                :value="old('email')"
-                type="email"
-                required
-                autofocus
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+            <flux:input name="email" :label="__('Correo electrónico')" :value="old('email')" type="email" required
+                autofocus autocomplete="email" placeholder="email@example.com" />
 
             <!-- Password -->
             <div class="relative">
-                <flux:input
-                    name="password"
-                    :label="__('Contraseña')"
-                    type="password"
-                    required
-                    autocomplete="current-password"
-                    :placeholder="__('Contraseña')"
-                    viewable
-                />
+                <flux:input name="password" :label="__('Contraseña')" type="password" required
+                    autocomplete="current-password" :placeholder="__('Contraseña')" viewable />
 
                 @if (Route::has('password.request'))
                     <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>

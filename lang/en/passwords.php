@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Password Reset Language Lines
@@ -18,5 +17,4 @@ return [
     'throttled' => 'Por favor, espera antes de volver a intentarlo.',
     'token' => 'Este token para restablecer tu contraseña no es válido.',
     'user' => "No encontramos un usuario con esa dirección de correo electrónico.",
-
 ];

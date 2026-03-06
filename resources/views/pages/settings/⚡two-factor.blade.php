@@ -46,17 +46,14 @@ new #[Title('Two-factor authentication')] class extends Component {
 
         $this->twoFactorEnabled = false;
     }
-} ?>
+}; ?>
 
 <section class="w-full">
     @include('partials.settings-heading')
 
     <flux:heading class="sr-only">{{ __('Two-factor authentication settings') }}</flux:heading>
 
-    <x-pages::settings.layout
-        :heading="__('Autenticación de dos factores')"
-        :subheading="__('Administrar su configuración de autenticación de dos factores')"
-    >
+    <x-pages::settings.layout :heading="__('Autenticación de dos factores')" :subheading="__('Administrar su configuración de autenticación de dos factores')">
         <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
             @if ($twoFactorEnabled)
                 <div class="space-y-4">
@@ -71,12 +68,8 @@ new #[Title('Two-factor authentication')] class extends Component {
                     <livewire:pages::settings.two-factor.recovery-codes :$requiresConfirmation />
 
                     <div class="flex justify-start">
-                        <flux:button
-                            variant="danger"
-                            icon="shield-exclamation"
-                            icon:variant="outline"
-                            wire:click="disable"
-                        >
+                        <flux:button variant="danger" icon="shield-exclamation" icon:variant="outline"
+                            wire:click="disable">
                             {{ __('Desactivar 2FA') }}
                         </flux:button>
                     </div>
@@ -92,12 +85,8 @@ new #[Title('Two-factor authentication')] class extends Component {
                     </flux:text>
 
                     <flux:modal.trigger name="two-factor-setup-modal">
-                        <flux:button
-                            variant="primary"
-                            icon="shield-check"
-                            icon:variant="outline"
-                            wire:click="$dispatch('start-two-factor-setup')"
-                        >
+                        <flux:button variant="primary" icon="shield-check" icon:variant="outline"
+                            wire:click="$dispatch('start-two-factor-setup')">
                             {{ __('Activar 2FA') }}
                         </flux:button>
                     </flux:modal.trigger>

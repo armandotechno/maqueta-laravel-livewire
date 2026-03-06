@@ -5,6 +5,7 @@ use Livewire\Component;
 new class extends Component {}; ?>
 
 <section class="mt-10 space-y-6">
+
     <div class="relative mb-5">
         <flux:heading>{{ __('Eliminar cuenta') }}</flux:heading>
         <flux:subheading>{{ __('Eliminar tu cuenta y todos sus recursos') }}</flux:subheading>

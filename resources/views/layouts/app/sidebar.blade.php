@@ -23,12 +23,6 @@
                         Usuarios
                     </flux:sidebar.item>
 
-                    {{-- Enlace a la gestión de Roles --}}
-                    <flux:sidebar.item icon="shield-check" :href="route('admin.roles')"
-                        :current="request()->routeIs('admin.roles')" wire:navigate>
-                        Roles y Permisos
-                    </flux:sidebar.item>
-
                 </flux:sidebar.group>
             </flux:sidebar.nav>
         @endrole

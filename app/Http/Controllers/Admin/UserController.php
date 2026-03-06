@@ -16,19 +16,33 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $rules = [
+            'name' => 'required|string|max:255|min:2|max:25',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-        ]);
+        ];
+
+        $messages = [
+            'name.required' => 'El nombre es obligatorio.',
+            'name.string' => 'El nombre debe ser una cadena de texto.',
+            'name.min' => 'El nombre debe tener al menos :min caracteres.',
+            'name.max' => 'El nombre no puede tener más de :max caracteres.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingresa un formato de correo válido.',
+            'email.unique' => 'Este correo ya está registrado en el sistema.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+        ];
+
+        $request->validate($rules, $messages);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
         ]);
 
-        return back()->with('status', 'Usuario creado con éxito');
+        return back()->with('status', '¡Usuario creado con éxito!');
     }
 
     public function updateRoles(Request $request, User $user)

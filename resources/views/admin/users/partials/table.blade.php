@@ -1,6 +1,6 @@
 {{-- Tabla de Usuarios --}}
 <div
-    class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700">
+    class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 text-black">
     <flux:table>
         <flux:table.columns>
             <flux:table.column>Nombre</flux:table.column>
@@ -50,7 +50,7 @@
                             @foreach (\Spatie\Permission\Models\Role::all() as $role)
                                 <label class="flex items-center gap-3 cursor-pointer">
                                     <input type="checkbox" name="roles[]" value="{{ $role->name }}"
-                                        class="rounded border-neutral-300 text-neutral-900 shadow-sm focus:ring-neutral-500"
+                                        class="rounded border-neutral-300 text-neutral-900 shadow-sm focus:ring-neutral-700"
                                         {{ $user->hasRole($role->name) ? 'checked' : '' }}>
                                     <span class="text-sm font-medium">{{ ucfirst($role->name) }}</span>
                                 </label>

@@ -5,17 +5,12 @@ use App\Http\Controllers\ProfileController; // Asegúrate de que este controlado
 use Illuminate\Support\Facades\Route;
 
 // 1. Ruta pública
-Route::view('/', 'welcome')->name('home');
+Route::view('/', 'pages.auth.login')->name('home');
 
 // 2. Rutas protegidas
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::view('dashboard', 'dashboard')->name('dashboard');
-
-    // Definimos profile.edit manualmente para que el componente de Flux no de error
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Módulo de Administración (Solo Admin)
     Route::middleware(['role:admin'])->group(function () {

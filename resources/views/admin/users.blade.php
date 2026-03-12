@@ -11,9 +11,11 @@
                 <flux:subheading>Administración de personal y roles del MPPRE.</flux:subheading>
             </div>
 
-            <flux:modal.trigger name="create-user">
-                <flux:button variant="primary" icon="plus">Nuevo Usuario</flux:button>
-            </flux:modal.trigger>
+            @can('create users')
+                <flux:modal.trigger name="create-user">
+                    <flux:button variant="primary" icon="plus">Nuevo Usuario</flux:button>
+                </flux:modal.trigger>
+            @endcan
         </div>
 
         {{-- Tabla de Usuarios --}}

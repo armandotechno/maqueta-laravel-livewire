@@ -9,51 +9,19 @@
             @csrf
 
             <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Correo electrónico')"
-                :value="old('email')"
-                type="email"
-                required
-                autofocus
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+            <flux:input name="email" :label="__('Correo electrónico')" :value="old('email')" type="email" required
+                autofocus autocomplete="email" placeholder="email@example.com" />
 
             <!-- Password -->
             <div class="relative">
-                <flux:input
-                    name="password"
-                    :label="__('Contraseña')"
-                    type="password"
-                    required
-                    autocomplete="current-password"
-                    :placeholder="__('Contraseña')"
-                    viewable
-                />
-
-                @if (Route::has('password.request'))
-                    <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
-                        {{ __('Olvidaste tu contraseña?') }}
-                    </flux:link>
-                @endif
+                <flux:input name="password" :label="__('Contraseña')" type="password" required
+                    autocomplete="current-password" :placeholder="__('Contraseña')" viewable />
             </div>
-
-            <!-- Remember Me -->
-            <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
-
             <div class="flex items-center justify-end">
                 <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
                     {{ __('Acceder') }}
                 </flux:button>
             </div>
         </form>
-
-        @if (Route::has('register'))
-            <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-600 dark:text-zinc-400">
-                <span>{{ __('¿No tienes una cuenta?') }}</span>
-                <flux:link :href="route('register')" wire:navigate>{{ __('Crear una cuenta') }}</flux:link>
-            </div>
-        @endif
     </div>
 </x-layouts::auth>

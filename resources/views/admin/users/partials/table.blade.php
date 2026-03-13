@@ -1,40 +1,62 @@
 {{-- Tabla de Usuarios --}}
 <div
-    class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-[#333333] dark:bg-[#03295a] transition-colors duration-300">
+    class="relative h-full flex-1 overflow-hidden rounded-xl border  dark:border-[#333333] dark:bg-[#f5f7f9] transition-colors duration-300">
     <flux:table>
         <flux:table.columns>
-            <flux:table.column>Nombre</flux:table.column>
-            <flux:table.column>Email</flux:table.column>
-            <flux:table.column>Roles</flux:table.column>
-            <flux:table.column class="w-20">Acciones</flux:table.column>
+            <flux:table.column class="!text-black">Nombre</flux:table.column>
+            <flux:table.column class="!text-black">Email</flux:table.column>
+            <flux:table.column class="!text-black">Roles</flux:table.column>
+            <flux:table.column class="w-20 !text-black">Acciones</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
             @foreach (\App\Models\User::with('roles')->latest()->get() as $user)
                 <flux:table.row>
-                    <flux:table.cell font="medium" class="whitespace-nowrap">{{ $user->name }}
+                    <flux:table.cell font="medium" class="!text-black">
+                        {{ $user->name }}
                     </flux:table.cell>
-                    <flux:table.cell class="text-neutral-500">{{ $user->email }}</flux:table.cell>
-                    <flux:table.cell>
+
+                    {{-- Se cambió text-neutral-500 por text-black --}}
+                    <flux:table.cell class="!text-black">
+                        {{ $user->email }}
+                    </flux:table.cell>
+
+                    <flux:table.cell class="!text-black">
                         <div class="flex flex-wrap gap-1">
                             @forelse($user->getRoleNames() as $role)
-                                <flux:badge size="sm" color="zinc" inset="top bottom">
-                                    {{ ucfirst($role) }}</flux:badge>
+                                <flux:badge size="sm" color="zinc" inset="top bottom" class="!text-black">
+                                    {{ ucfirst($role) }}
+                                </flux:badge>
                             @empty
-                                <span class="text-xs text-neutral-400 italic">Sin asignar</span>
+                                {{-- Se cambió text-neutral-400 por text-black --}}
+                                <span class="!text-black">Sin asignar</span>
                             @endforelse
                         </div>
                     </flux:table.cell>
+
                     <flux:table.cell>
                         <flux:dropdown>
-                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" />
-                            <flux:menu>
+                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal"
+                                class="!text-black" />
+
+                            {{-- Forzamos el fondo blanco y un borde gris claro para el contenedor del menú --}}
+                            <flux:menu class="!bg-white !text-black !border !border-gray-200">
                                 <flux:modal.trigger name="edit-roles-{{ $user->id }}">
-                                    <flux:menu.item icon="shield-check">Asignar Roles</flux:menu.item>
+                                    {{-- Forzamos el texto negro y un fondo gris clarito al pasar el mouse --}}
+                                    <flux:menu.item icon="shield-check" class="!text-black hover:!bg-gray-100">
+                                        Asignar Roles
+                                    </flux:menu.item>
                                 </flux:modal.trigger>
-                                <flux:menu.separator />
+
+
+
                                 <flux:modal.trigger name="delete-user-{{ $user->id }}">
-                                    <flux:menu.item variant="danger" icon="trash">Eliminar</flux:menu.item>
+                                    {{-- Nota: El variant="danger" lo pone rojo automáticamente.
+                     Si lo quieres estrictamente negro, agrégale class="!text-black hover:!bg-gray-100" --}}
+                                    <flux:menu.item variant="danger" icon="trash"
+                                        class="!text-black hover:!bg-gray-100">
+                                        Eliminar
+                                    </flux:menu.item>
                                 </flux:modal.trigger>
                             </flux:menu>
                         </flux:dropdown>
@@ -42,24 +64,32 @@
                 </flux:table.row>
 
                 {{-- MODAL DE ROLES --}}
-                <flux:modal name="edit-roles-{{ $user->id }}" class="md:w-[400px]">
+                <flux:modal name="edit-roles-{{ $user->id }}" class="md:w-[400px] !bg-white !text-black">
                     <form method="POST" action="{{ route('admin.users.roles.update', $user->id) }}" class="space-y-6">
                         @csrf @method('PUT')
-                        <flux:heading size="lg">Roles: {{ $user->name }}</flux:heading>
+
+                        {{-- Forzamos el título a negro --}}
+                        <flux:heading size="lg" class="!text-black">Roles: {{ $user->name }}</flux:heading>
+
                         <div class="space-y-3">
                             @foreach (\Spatie\Permission\Models\Role::all() as $role)
                                 <label class="flex items-center gap-3 cursor-pointer">
+                                    {{-- Ajusté un poco el borde y el color del check para que se vea más nítido en fondo blanco --}}
                                     <input type="checkbox" name="roles[]" value="{{ $role->name }}"
-                                        class="rounded border-neutral-300 text-neutral-900 shadow-sm focus:ring-neutral-700"
+                                        class="rounded border-gray-400 text-black shadow-sm focus:ring-black"
                                         {{ $user->hasRole($role->name) ? 'checked' : '' }}>
-                                    <span class="text-sm font-medium">{{ ucfirst($role->name) }}</span>
+
+                                    {{-- Forzamos el texto del rol a negro --}}
+                                    <span class="text-sm font-medium !text-black">{{ ucfirst($role->name) }}</span>
                                 </label>
                             @endforeach
                         </div>
+
                         <div class="flex gap-2 pt-4">
                             <flux:spacer />
                             <flux:modal.close>
-                                <flux:button variant="ghost">Cancelar</flux:button>
+                                {{-- Forzamos el botón de cancelar a negro --}}
+                                <flux:button variant="ghost" class="!text-black">Cancelar</flux:button>
                             </flux:modal.close>
                             <flux:button type="submit" variant="primary">Actualizar</flux:button>
                         </div>
@@ -67,22 +97,27 @@
                 </flux:modal>
 
                 {{-- MODAL DE ELIMINACIÓN --}}
-                <flux:modal name="delete-user-{{ $user->id }}" class="md:w-[400px]">
+                <flux:modal name="delete-user-{{ $user->id }}" class="md:w-[400px] !bg-white !text-black">
                     <div class="space-y-6 text-center">
                         <div class="flex justify-center">
-                            <div class="rounded-full bg-red-100 p-3 dark:bg-red-900/30">
+                            {{-- Eliminamos la clase dark: para que el círculo siempre sea rojo claro --}}
+                            <div class="rounded-full bg-red-100 p-3">
                                 <flux:icon.exclamation-triangle class="size-8 text-red-600" />
                             </div>
                         </div>
-                        <flux:heading size="lg">¿Eliminar a {{ $user->name }}?</flux:heading>
+
+                        {{-- Forzamos el texto del título a negro --}}
+                        <flux:heading size="lg" class="!text-black">¿Eliminar a {{ $user->name }}?
+                        </flux:heading>
+
                         <div class="flex gap-2">
                             <flux:modal.close class="flex-1">
-                                <flux:button variant="ghost" class="w-full">Cancelar</flux:button>
+                                {{-- Forzamos el botón de cancelar a negro --}}
+                                <flux:button variant="ghost" class="w-full !text-black">Cancelar</flux:button>
                             </flux:modal.close>
                             <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" class="flex-1">
                                 @csrf @method('DELETE')
-                                <flux:button type="submit" variant="danger" class="w-full">Eliminar
-                                </flux:button>
+                                <flux:button type="submit" variant="danger" class="w-full">Eliminar</flux:button>
                             </form>
                         </div>
                     </div>

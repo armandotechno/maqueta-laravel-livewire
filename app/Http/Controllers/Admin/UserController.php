@@ -47,10 +47,14 @@ class UserController extends Controller
 
     public function updateRoles(Request $request, User $user)
     {
+        // 1. Sincroniza los roles seleccionados (si no viene nada, pasa un array vacío)
         $user->syncRoles($request->roles ?? []);
-        return back()->with('status', 'Roles actualizados');
-    }
 
+        // 2. Sincroniza los permisos seleccionados (si no viene nada, pasa un array vacío) TODO: ver si esta bien
+        $user->syncPermissions($request->permissions ?? []);
+
+        return back()->with('status', 'Roles y permisos actualizados correctamente');
+    }
     public function destroy(User $user)
     {
         // Verificación de seguridad para el proyecto del TSJ

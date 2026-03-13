@@ -1,12 +1,6 @@
 @if (session('status') || session('error') || $errors->any())
-    <div x-data="{ show: true }"
-         x-init="setTimeout(() => show = false, 5000)"
-         x-show="show"
-         x-transition:leave="transition ease-in duration-300"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         x-cloak
-         class="w-full">
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" x-cloak class="w-full">
 
         {{-- Éxito --}}
         @if (session('status'))

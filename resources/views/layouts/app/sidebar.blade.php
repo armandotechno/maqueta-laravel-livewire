@@ -26,6 +26,23 @@
                 </flux:sidebar.group>
             </flux:sidebar.nav>
         @endrole
+
+        {{-- Prueba --}}
+
+        @role('user')
+            <flux:sidebar.nav>
+                <flux:sidebar.group heading="hola" class="grid">
+                </flux:sidebar.group>
+            </flux:sidebar.nav>
+        @endrole
+        {{-- Prueba --}}
+
+        @role('user')
+            <flux:sidebar.nav>
+                <flux:sidebar.group heading="hi" class="grid">
+                </flux:sidebar.group>
+            </flux:sidebar.nav>
+        @endrole
         <flux:sidebar.nav>
             <flux:sidebar.group :heading="__('Plataforma')" class="grid">
                 <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"

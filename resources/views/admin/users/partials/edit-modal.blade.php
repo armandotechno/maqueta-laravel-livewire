@@ -55,9 +55,12 @@
             <div class="flex gap-2 pt-4">
                 <flux:spacer />
                 <flux:modal.close>
-                    <flux:button variant="ghost" class="!text-black">Cancelar</flux:button>
+                    <flux:button variant="primary" color="red">Cancelar</flux:button>
                 </flux:modal.close>
-                <flux:button type="submit" variant="primary">Actualizar</flux:button>
+                <flux:button type="submit"
+                    class="!bg-[#03295a] hover:!bg-[#043675] !text-white border-none shadow-sm transition-colors">
+                    Actualizar
+                </flux:button>
             </div>
         </form>
     </div>

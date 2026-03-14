@@ -19,7 +19,7 @@
 
         <div class="flex gap-3">
             <flux:modal.close class="flex-1">
-                <flux:button variant="ghost" class="w-full !text-black border-gray-200">
+                <flux:button variant="primary" color="red" class="w-full border-gray-200">
                     Cancelar
                 </flux:button>
             </flux:modal.close>
@@ -27,7 +27,8 @@
             <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" class="flex-1">
                 @csrf
                 @method('DELETE')
-                <flux:button type="submit" variant="danger" class="w-full">
+                <flux:button type="submit" variant="primary" color="#03295a"
+                    class="!bg-[#03295a] hover:!bg-[#043675] !text-white border-none shadow-sm transition-colors">
                     Confirmar Eliminación
                 </flux:button>
             </form>

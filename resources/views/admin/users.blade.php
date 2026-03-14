@@ -15,7 +15,7 @@
 
                 {{-- Ejemplo 2: Cambiando el subtítulo a un color hexadecimal personalizado (ej. un gris oscuro) --}}
                 <flux:subheading class="text-[#475569]">
-                    Administración de personal y roles del MPPRE.
+                    Administración de personal y roles.
                 </flux:subheading>
             </div>
 

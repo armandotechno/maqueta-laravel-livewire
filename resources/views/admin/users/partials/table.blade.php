@@ -1,6 +1,6 @@
 {{-- Tabla de Usuarios --}}
 <div
-    class="relative h-full flex-1 overflow-hidden rounded-xl border  dark:border-[#333333] dark:bg-[#f5f7f9] transition-colors duration-300">
+    class="relative h-full flex-1 overflow-hidden rounded-xl border p-6 dark:border-[#333333] dark:bg-[#f5f7f9] transition-colors duration-300">
     <flux:table>
         <flux:table.columns>
             <flux:table.column class="!text-black">Nombre</flux:table.column>

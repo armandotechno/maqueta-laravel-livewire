@@ -63,83 +63,9 @@
                     </flux:table.cell>
                 </flux:table.row>
 
-                {{-- MODAL DE ROLES --}}
-                <flux:modal name="edit-roles-{{ $user->id }}" class="md:w-[400px] !bg-white !text-black">
-                    <form method="POST" action="{{ route('admin.users.roles.update', $user->id) }}" class="space-y-6">
-                        @csrf @method('PUT')
 
-                        <flux:heading size="lg" class="!text-black">Roles y Permisos: {{ $user->name }}
-                        </flux:heading>
-
-                        {{-- Sección de Roles --}}
-                        <div>
-                            <h3 class="text-sm font-bold border-b border-gray-300 pb-1 mb-3 !text-black">Roles</h3>
-                            <div class="space-y-3">
-                                @foreach (\Spatie\Permission\Models\Role::all() as $role)
-                                    <label class="flex items-center gap-3 cursor-pointer">
-                                        <input type="checkbox" name="roles[]" value="{{ $role->name }}"
-                                            class="rounded border-gray-400 text-black shadow-sm focus:ring-black"
-                                            {{ $user->hasRole($role->name) ? 'checked' : '' }}>
-                                        <span class="text-sm font-medium !text-black">{{ ucfirst($role->name) }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        {{-- Sección de Permisos Directos --}}
-                        <div class="mt-4">
-                            <h3 class="text-sm font-bold border-b border-gray-300 pb-1 mb-3 !text-black">Permisos
-                            </h3>
-                            <div class="space-y-3 max-h-48 overflow-y-auto"> {{-- Le puse scroll por si tienes muchos permisos --}}
-                                @foreach (\Spatie\Permission\Models\Permission::all() as $permission)
-                                    <label class="flex items-center gap-3 cursor-pointer">
-                                        <input type="checkbox" name="permissions[]" value="{{ $permission->name }}"
-                                            class="rounded border-gray-400 text-black shadow-sm focus:ring-black"
-                                            {{-- hasDirectPermission verifica si el usuario tiene el permiso sin importar el rol --}}
-                                            {{ $user->hasDirectPermission($permission->name) ? 'checked' : '' }}>
-                                        <span
-                                            class="text-sm font-medium !text-black">{{ ucfirst($permission->name) }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <div class="flex gap-2 pt-4">
-                            <flux:spacer />
-                            <flux:modal.close>
-                                <flux:button variant="ghost" class="!text-black">Cancelar</flux:button>
-                            </flux:modal.close>
-                            <flux:button type="submit" variant="primary">Actualizar</flux:button>
-                        </div>
-                    </form>
-                </flux:modal>
-
-                {{-- MODAL DE ELIMINACIÓN --}}
-                <flux:modal name="delete-user-{{ $user->id }}" class="md:w-[400px] !bg-white !text-black">
-                    <div class="space-y-6 text-center">
-                        <div class="flex justify-center">
-                            {{-- Eliminamos la clase dark: para que el círculo siempre sea rojo claro --}}
-                            <div class="rounded-full bg-red-100 p-3">
-                                <flux:icon.exclamation-triangle class="size-8 text-red-600" />
-                            </div>
-                        </div>
-
-                        {{-- Forzamos el texto del título a negro --}}
-                        <flux:heading size="lg" class="!text-black">¿Eliminar a {{ $user->name }}?
-                        </flux:heading>
-
-                        <div class="flex gap-2">
-                            <flux:modal.close class="flex-1">
-                                {{-- Forzamos el botón de cancelar a negro --}}
-                                <flux:button variant="ghost" class="w-full !text-black">Cancelar</flux:button>
-                            </flux:modal.close>
-                            <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" class="flex-1">
-                                @csrf @method('DELETE')
-                                <flux:button type="submit" variant="danger" class="w-full">Eliminar</flux:button>
-                            </form>
-                        </div>
-                    </div>
-                </flux:modal>
+                @include('admin.users.partials.edit-modal')
+                @include('admin.users.partials.delete-modal')
             @endforeach
         </flux:table.rows>
     </flux:table>

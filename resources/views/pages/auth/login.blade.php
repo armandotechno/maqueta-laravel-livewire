@@ -10,12 +10,13 @@
 
             <!-- Email Address -->
             <flux:input name="email" :label="__('Correo electrónico')" :value="old('email')" type="email" required
-                autofocus autocomplete="email" placeholder="email@example.com" />
+                autofocus autocomplete="email" placeholder="email@example.com" maxlength="50" />
 
             <!-- Password -->
             <div class="relative">
                 <flux:input name="password" :label="__('Contraseña')" type="password" required
-                    autocomplete="current-password" :placeholder="__('Contraseña')" viewable />
+                    autocomplete="current-password" :placeholder="__('Contraseña')" viewable
+                    x-on:input="$el.value = $el.value.replace(/[^a-zA-Z0-9@._-]/g, '')" maxlength="50" />
             </div>
             <div class="flex items-center justify-end">
                 <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">

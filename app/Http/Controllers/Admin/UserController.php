@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $rules = [
             'name' => 'required|string|max:255|min:2|max:25',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email:rfc,dns|min:6|max:255|unique:users',
             'password' => 'required|string|min:8',
         ];
 
@@ -28,8 +28,12 @@ class UserController extends Controller
             'name.min' => 'El nombre debe tener al menos :min caracteres.',
             'name.max' => 'El nombre no puede tener más de :max caracteres.',
             'email.required' => 'El correo electrónico es obligatorio.',
+
             'email.email' => 'Ingresa un formato de correo válido.',
             'email.unique' => 'Este correo ya está registrado en el sistema.',
+            'email.min' => 'El correo electrónico debe tener al menos :min caracteres.',
+            'email.max' => 'El correo electrónico no puede tener más de :max caracteres.',
+
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
         ];

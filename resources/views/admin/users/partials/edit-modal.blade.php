@@ -3,8 +3,8 @@
     <div x-data="{
         selectedRoles: {{ json_encode($user->roles->pluck('name')) }},
         rolePermissions: {
-            admin: ['edit articles', 'delete articles', 'manage users'],
-            user: ['edit articles']
+            admin: ['editar artículos', 'eliminar artículos', 'administrar usuarios'],
+            user: ['editar artículos']
         },
         // Función para saber si un permiso debe mostrarse
         shouldShow(permission) {

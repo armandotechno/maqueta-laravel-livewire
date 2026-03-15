@@ -9,7 +9,8 @@
             <flux:label class="font-bold !text-black">Nombre</flux:label>
             <flux:input wire:model="name" name="name" :value="old('name')" required
                 class="!bg-blue-50 !border-2 !border-black !rounded-lg focus:!ring-2 focus:!ring-blue-500"
-                style="color: black !important;" />
+                style="color: black !important;"
+                x-on:input="$el.value = $el.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" maxlength="50" />
             <flux:error name="name" />
         </flux:field>
 
@@ -17,7 +18,8 @@
             <flux:label class="font-bold !text-black">Email</flux:label>
             <flux:input wire:model="email" name="email" type="email" :value="old('email')" required
                 class="!bg-blue-50 !border-2 !border-black !rounded-lg focus:!ring-2 focus:!ring-blue-500"
-                style="color: black !important;" />
+                style="color: black !important;" x-on:input="$el.value = $el.value.replace(/[^a-zA-Z0-9@._-]/g, '')"
+                maxlength="50" />
             <flux:error name="email" />
         </flux:field>
 
@@ -26,7 +28,7 @@
             <flux:input wire:model="password" name="password" type="password" required
                 class="!bg-blue-50 !border-2 !border-black !rounded-lg focus:!ring-2 focus:!ring-blue-500"
                 style="color: black !important;" />
-            <flux:error name="password" />
+            <flux:error name="password" maxlength="50" />
         </flux:field>
 
         <div class="flex gap-2">

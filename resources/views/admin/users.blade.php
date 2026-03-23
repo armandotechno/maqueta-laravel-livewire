@@ -1,5 +1,4 @@
 <x-layouts::app :title="__('Gestión de Usuarios')">
-    {{-- Si quieres que cualquier texto suelto en este contenedor tenga un color por defecto, puedes agregarlo aquí (ej. text-slate-800) --}}
     <div class="flex h-full w-full flex-1 flex-col gap-6 rounded-xl p-4 text-slate-800">
 
         {{-- Alertas --}}
@@ -8,17 +7,16 @@
         {{-- Encabezado --}}
         <div class="flex items-center justify-between px-2">
             <div>
-                {{-- Ejemplo 1: Cambiando el título a un azul oscuro de Tailwind --}}
                 <flux:heading size="xl" class="text-blue-900">
                     Gestión de Usuarios
                 </flux:heading>
 
-                {{-- Ejemplo 2: Cambiando el subtítulo a un color hexadecimal personalizado (ej. un gris oscuro) --}}
                 <flux:subheading class="text-[#475569]">
                     Administración de personal y roles.
                 </flux:subheading>
             </div>
 
+            {{-- 1. EL TRIGGER: Se queda igual porque el modal dentro del componente se llama 'create-user' --}}
             <flux:modal.trigger name="create-user">
                 <flux:button variant="primary" icon="plus">Nuevo Usuario</flux:button>
             </flux:modal.trigger>
@@ -27,7 +25,8 @@
         {{-- Tabla de Usuarios --}}
         @include('admin.users.partials.table')
 
-        {{-- Modal para Crear Usuario --}}
-        @include('admin.users.partials.create-modal')
+        {{-- 2. EL CAMBIO: Llamas al componente Livewire en lugar del partial de Blade --}}
+        <livewire:admin.create-user />
+
     </div>
 </x-layouts::app>

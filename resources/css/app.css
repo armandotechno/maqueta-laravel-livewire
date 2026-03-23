@@ -6,35 +6,33 @@
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* Eliminamos el custom-variant dark para no procesar estilos nocturnos */
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
-    --color-zinc-50: #171717;
-    --color-zinc-100: #f5f5f5;
-    --color-zinc-200: #e5e5e5;
-    --color-zinc-300: #d4d4d4;
-    --color-zinc-400: #a3a3a3;
-    --color-zinc-500: #737373;
-    --color-zinc-600: #525252;
-    --color-zinc-700: #404040;
-    --color-zinc-800: #262626;
-    --color-zinc-900: #171717;
-    --color-zinc-950: #0a0a0a;
+    /* Escala de grises nítida para modo claro */
+    --color-zinc-50: #f9fafb;
+    --color-zinc-100: #f3f4f6;
+    --color-zinc-200: #e5e7eb;
+    --color-zinc-300: #d1d5db;
+    --color-zinc-400: #9ca3af;
+    --color-zinc-500: #6b7280;
+    --color-zinc-600: #4b5563;
+    --color-zinc-700: #374151;
+    --color-zinc-800: #1f2937;
+    --color-zinc-900: #111827;
+    --color-zinc-950: #030712;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-white);
+    /* Configuración de tu azul institucional #03295a */
+    --color-accent: #03295a;
+    --color-accent-content: #ffffff;
+    --color-accent-foreground: #03295a;
 }
 
-@layer theme {
-    .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
-    }
-}
+/* IMPORTANTE: Hemos eliminado el @layer theme .dark { ... }
+   para que el acento NUNCA cambie a blanco.
+*/
 
 @layer base {
 
@@ -43,24 +41,47 @@
     ::before,
     ::backdrop,
     ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
+        border-color: var(--color-zinc-200, currentColor);
+    }
+
+    /* Forzamos que el cuerpo de la página siempre espere colores claros */
+    html {
+        color-scheme: light;
+        background-color: white;
+        color: #000000;
     }
 }
+
+/* Ajustes específicos para Flux en Modo Claro Forzado */
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {
     @apply grid gap-2;
 }
 
 [data-flux-label] {
-    @apply !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight font-semibold text-zinc-900;
 }
 
+/* Ajuste de inputs para que el texto sea siempre negro y legible */
+[data-flux-control] {
+    color: #000000 !important;
+    opacity: 1 !important;
+}
+
+[data-flux-control]::placeholder {
+    color: #9ca3af !important;
+    opacity: 1 !important;
+}
+
+/* Focus con tu color azul #03295a */
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+    @apply outline-hidden ring-2 ring-[#03295a] ring-offset-2 ring-offset-white;
+    border-color: #03295a !important;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+/* Estilo para los badges en la tabla para que no sean grises muertos */
+[data-flux-badge] {
+    @apply font-medium border-none;
+}

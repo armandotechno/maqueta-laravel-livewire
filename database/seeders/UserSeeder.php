@@ -3,26 +3,43 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Persona;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Creamos al usuario con la contraseña 123456 encriptada
-        $admin = User::create([
-            'name'     => 'Administrador Sistema',
-            'email'    => 'admin@admin.com',
-            'password' => Hash::make('123456'), // Encriptación segura de Laravel
-        ]);
+        // Usamos una transacción para asegurarnos de que se creen ambos o ninguno
+        DB::transaction(function () {
 
-        // 2. Le asignamos el rol de admin (Asegúrate de haber corrido RolesAndPermissionsSeeder antes)
-        $role = Role::where('name', 'admin')->first();
+            // 1. Creamos la Persona (Madre del usuario)
+            $persona = Persona::create([
+                'cedula'           => 'V-00000000',
+                'primer_nombre'    => 'ADMINISTRADOR',
+                'primer_apellido'  => 'SISTEMA',
+                'fecha_nacimiento' => '1990-01-01',
+                'sexo'             => 'M',
+                'estado'           => 'CARACAS',
+            ]);
 
-        if ($role) {
-            $admin->assignRole($role);
-        }
+            // 2. Creamos al usuario vinculado a esa persona
+            $admin = User::create([
+                'persona_id' => $persona->id, // FK obligatoria
+                'name'       => $persona->primer_nombre . ' ' . $persona->primer_apellido,
+                'email'      => 'admin@admin.com',
+                'password'   => Hash::make('123456'),
+            ]);
+
+            // 3. Asignación del rol de Spatie
+            $role = Role::where('name', 'admin')->first();
+
+            if ($role) {
+                $admin->assignRole($role);
+            }
+        });
     }
 }

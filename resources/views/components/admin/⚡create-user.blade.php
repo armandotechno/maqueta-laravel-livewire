@@ -42,6 +42,15 @@ new class extends Component {
         $this->loading = true;
         $cedulaCompleta = $this->nacionalidad . '-' . $this->cedula;
 
+        // 1. NUEVA VALIDACIÓN: Revisamos primero nuestra base de datos
+        if (Persona::where('cedula', $cedulaCompleta)->exists()) {
+            $this->isFound = false;
+            $this->loading = false;
+            session()->flash('error', 'El usuario con esta cédula ya se encuentra registrado en el sistema.');
+            return; // Detenemos la ejecución aquí, no llamamos a la API
+        }
+
+        // 2. Si no existe en BD, procedemos a consultar la API
         try {
             $response = Http::withOptions(['verify' => false])->get("https://apicedulas.mppre.gob.ve/personas/cedulanac/{$cedulaCompleta}");
 
@@ -56,15 +65,12 @@ new class extends Component {
                     $this->primer_apellido = $datosPersona['primer_apellido'] ?? '';
                     $this->segundo_apellido = $datosPersona['segundo_apellido'] ?? '';
 
-                    // Unimos nombres y apellidos para el input de visualización
                     $this->nombres_completos = trim($this->primer_nombre . ' ' . $this->segundo_nombre);
                     $this->apellidos_completos = trim($this->primer_apellido . ' ' . $this->segundo_apellido);
 
-                    // Guardamos los datos originales
                     $this->fecha_nacimiento = $datosPersona['fecha_nac'] ?? null;
                     $this->sexo = $datosPersona['sexo'] ?? null;
 
-                    // Convertimos M/F a texto completo para la vista
                     if ($this->sexo === 'M') {
                         $this->sexo_completo = 'Masculino';
                     } elseif ($this->sexo === 'F') {
@@ -81,7 +87,7 @@ new class extends Component {
                 }
             } else {
                 $this->isFound = false;
-                session()->flash('error', 'La cédula no se encuentra registrada en el sistema.');
+                session()->flash('error', 'La cédula no se encuentra registrada en el sistema nacional.');
             }
         } catch (\Exception $e) {
             $this->isFound = false;
@@ -94,6 +100,12 @@ new class extends Component {
     public function guardar()
     {
         $cedulaFinal = $this->nacionalidad . '-' . $this->cedula;
+
+        // NUEVO: Validación de seguridad extra por si acaso
+        if (Persona::where('cedula', $cedulaFinal)->exists()) {
+            session()->flash('error', 'El usuario con esta cédula ya se encuentra registrado en el sistema.');
+            return;
+        }
 
         $rules = [
             'cedula' => 'required|numeric',
@@ -127,7 +139,7 @@ new class extends Component {
                     'primer_apellido' => $this->primer_apellido,
                     'segundo_apellido' => $this->segundo_apellido,
                     'fecha_nacimiento' => $fechaSQL,
-                    'sexo' => $this->sexo, // Enviamos 'M' o 'F' a la base de datos
+                    'sexo' => $this->sexo,
                 ]);
 
                 User::create([
@@ -245,7 +257,7 @@ new class extends Component {
 
                     <flux:button type="submit" :disabled="!$isFound"
                         class="!bg-[#03295a] hover:!bg-[#043675] !text-white border-none shadow-lg transition-all {{ !$isFound ? 'opacity-30 cursor-not-allowed hover:!bg-[#03295a]' : '' }}">
-                        REGISTRAR FUNCIONARIO
+                        REGISTRAR USUARIO
                     </flux:button>
                 </div>
             </form>

@@ -25,8 +25,7 @@
         {{-- Tabla de Usuarios --}}
         @include('admin.users.partials.table')
 
-        {{-- 2. EL CAMBIO: Llamas al componente Livewire en lugar del partial de Blade --}}
-        <livewire:admin.create-user />
+        <livewire:create-user />
 
     </div>
 </x-layouts::app>

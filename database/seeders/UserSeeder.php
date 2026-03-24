@@ -31,6 +31,7 @@ class UserSeeder extends Seeder
                 'persona_id' => $persona->id, // FK obligatoria
                 'name'       => $persona->primer_nombre . ' ' . $persona->primer_apellido,
                 'email'      => 'admin@admin.com',
+                'needs_password_change' => false,
                 'password'   => Hash::make('123456'),
             ]);
 

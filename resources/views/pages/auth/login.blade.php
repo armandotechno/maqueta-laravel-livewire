@@ -12,9 +12,9 @@
                 {{-- Forzamos el label a blanco --}}
                 <flux:label class="font-bold !text-white text-sm uppercase">{{ __('Correo electrónico') }}</flux:label>
                 {{-- Input: Fondo blanco y texto negro sólido --}}
-                <flux:input name="email" :value="old('email')" type="email" required autofocus autocomplete="email"
+                <input name="email" :value="old('email')" type="email" required autofocus autocomplete="email"
                     placeholder="usuario@correo.com"
-                    class="!bg-white !border-black !border-2 !text-black shadow-sm placeholder:!text-gray-400 opacity-100"
+                    class="w-full mt-2 rounded-md bg-white border-2 border-black text-black placeholder-gray-400 px-3 py-2 shadow-sm focus:ring-0 focus:outline-none focus:border-black"
                     maxlength="50" />
                 <flux:error name="email" class="!text-white" />
             </flux:field>
@@ -25,9 +25,9 @@
                     <flux:label class="font-bold !text-white text-sm uppercase">{{ __('Contraseña') }}</flux:label>
                 </div>
                 {{-- Input: Fondo blanco, texto negro sólido, icono visible --}}
-                <flux:input name="password" type="password" required autocomplete="current-password"
+                <input name="password" type="password" required autocomplete="current-password"
                     :placeholder="__('Contraseña')" viewable {{-- Forzamos visibilidad de icono y colores --}}
-                    class="!bg-white !border-black !border-2 !text-black shadow-sm placeholder:!text-gray-400 opacity-100 flux-control-icon:!text-black"
+                    class="w-full mt-2 rounded-md bg-white border-2 border-black text-black placeholder-gray-400 px-3 py-2 shadow-sm focus:ring-0 focus:outline-none focus:border-black"
                     x-on:input="$el.value = $el.value.replace(/[^a-zA-Z0-9@._-]/g, '')" maxlength="50" />
                 <flux:error name="password" class="!text-white" />
             </flux:field>

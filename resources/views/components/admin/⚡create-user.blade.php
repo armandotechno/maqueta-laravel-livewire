@@ -30,6 +30,19 @@ new class extends Component {
     public $isFound = false;
     public $loading = false;
 
+    public function limpiarCampos()
+    {
+        $this->primer_nombre = '';
+        $this->segundo_nombre = '';
+        $this->primer_apellido = '';
+        $this->segundo_apellido = '';
+        $this->nombres_completos = '';
+        $this->apellidos_completos = '';
+        $this->fecha_nacimiento = null;
+        $this->sexo = null;
+        $this->sexo_completo = '';
+    }
+
     public function buscarCedula()
     {
         session()->forget(['error', 'status']);
@@ -60,6 +73,20 @@ new class extends Component {
                 if (isset($data['response'])) {
                     $datosPersona = $data['response'];
 
+                    $fechaNacimientoLocal = $datosPersona['fecha_nac'] ?? null;
+
+                    // 2. Validamos la edad antes de hacer cualquier otra cosa
+                    if ($fechaNacimientoLocal) {
+                        $edad = \Carbon\Carbon::parse($fechaNacimientoLocal)->age;
+
+                        if ($edad < 18) {
+                            $this->isFound = false;
+                            session()->flash('error', 'La persona debe ser mayor de edad (tiene ' . $edad . ' años).');
+                            $this->limpiarCampos();
+                            return;
+                        }
+                    }
+
                     $this->primer_nombre = $datosPersona['primer_nombre'] ?? '';
                     $this->segundo_nombre = $datosPersona['segundo_nombre'] ?? '';
                     $this->primer_apellido = $datosPersona['primer_apellido'] ?? '';
@@ -68,7 +95,7 @@ new class extends Component {
                     $this->nombres_completos = trim($this->primer_nombre . ' ' . $this->segundo_nombre);
                     $this->apellidos_completos = trim($this->primer_apellido . ' ' . $this->segundo_apellido);
 
-                    $this->fecha_nacimiento = $datosPersona['fecha_nac'] ?? null;
+                    $this->fecha_nacimiento = $fechaNacimientoLocal;
                     $this->sexo = $datosPersona['sexo'] ?? null;
 
                     if ($this->sexo === 'M') {
@@ -184,14 +211,16 @@ new class extends Component {
                 <flux:label class="font-bold !text-black text-xs uppercase mb-2">Identificación (V/E - Número)
                 </flux:label>
                 <div class="flex items-center gap-2">
-                    <flux:select wire:model="nacionalidad" class="!w-24 !bg-white !border-black !border-2 !text-black">
-                        <flux:select.option value="V">V</flux:select.option>
-                        <flux:select.option value="E">E</flux:select.option>
-                    </flux:select>
+                    <select wire:model="nacionalidad"
+                        class="w-24 rounded-md bg-white border-2 border-black text-black px-3 py-2 shadow-sm focus:ring-0 focus:outline-none focus:border-black">
+                        <option value="V">V</option>
+                        <option value="E">E</option>
+                    </select>
 
-                    <flux:input wire:model="cedula" placeholder="30434609"
+                    <input wire:model="cedula" placeholder="12345678"
                         x-on:input="$el.value = $el.value.replace(/[^0-9]/g, '')"
-                        class="flex-1 !bg-white !border-black !border-2 !text-black shadow-sm" />
+                        class="flex-1 w-full rounded-md bg-white border-2 border-black text-black px-3 py-2 shadow-sm focus:ring-0 focus:outline-none focus:border-black"
+                        maxlength="8" />
 
                     <flux:button wire:click="buscarCedula" wire:loading.attr="disabled"
                         class="!bg-[#03295a] hover:!bg-[#043675] !text-white h-10 px-4 font-bold border-none transition-all">
@@ -209,13 +238,13 @@ new class extends Component {
                 <div class="grid grid-cols-2 gap-3 opacity-90">
                     <flux:field>
                         <flux:label class="!text-black text-[10px] font-bold uppercase">Nombres</flux:label>
-                        <flux:input wire:model="nombres_completos" readonly
-                            class="!bg-gray-100 !text-black cursor-not-allowed" />
+                        <input wire:model="nombres_completos" readonly
+                            class="w-full rounded-md bg-gray-100 text-black px-3 py-2 shadow-sm cursor-not-allowed focus:ring-0 focus:outline-none" />
                     </flux:field>
                     <flux:field>
                         <flux:label class="!text-black text-[10px] font-bold uppercase">Apellidos</flux:label>
-                        <flux:input wire:model="apellidos_completos" readonly
-                            class="!bg-gray-100 !text-black cursor-not-allowed" />
+                        <input wire:model="apellidos_completos" readonly
+                            class="w-full rounded-md bg-gray-100 text-black px-3 py-2 shadow-sm cursor-not-allowed focus:ring-0 focus:outline-none" />
                     </flux:field>
                 </div>
 
@@ -223,28 +252,32 @@ new class extends Component {
                 <div class="grid grid-cols-2 gap-3 opacity-90">
                     <flux:field>
                         <flux:label class="!text-black text-[10px] font-bold uppercase">Fecha de Nac.</flux:label>
-                        <flux:input wire:model="fecha_nacimiento" readonly
-                            class="!bg-gray-100 !text-black cursor-not-allowed" />
+                        <input wire:model="fecha_nacimiento" readonly
+                            class="w-full rounded-md bg-gray-100 text-black px-3 py-2 shadow-sm cursor-not-allowed focus:ring-0 focus:outline-none" />
                     </flux:field>
                     <flux:field>
                         <flux:label class="!text-black text-[10px] font-bold uppercase">Género</flux:label>
-                        <flux:input wire:model="sexo_completo" readonly
-                            class="!bg-gray-100 !text-black cursor-not-allowed" />
+                        <input wire:model="sexo_completo" readonly
+                            class="w-full rounded-md bg-gray-100 text-black px-3 py-2 shadow-sm cursor-not-allowed focus:ring-0 focus:outline-none" />
                     </flux:field>
                 </div>
 
                 <div class="border-t border-gray-200 pt-4 space-y-4">
                     <flux:field>
                         <flux:label class="!text-black font-bold">Correo Electrónico</flux:label>
-                        <flux:input wire:model="email" type="email" placeholder="usuario@correo.com"
-                            class="!bg-blue-50 !border-2 !border-black !text-black" />
+
+                        <input type="email" wire:model="email" placeholder="usuario@correo.com"
+                            class="w-full mt-2 rounded-md border-2 border-black bg-blue-50 text-black px-3 py-2 shadow-sm focus:ring-0 focus:outline-none focus:border-black" />
+
                         <flux:error name="email" class="text-red-600 font-medium text-xs mt-1" />
                     </flux:field>
 
                     <flux:field>
                         <flux:label class="!text-black font-bold">Contraseña</flux:label>
-                        <flux:input wire:model="password" type="password"
-                            class="!bg-blue-50 !border-2 !border-black !text-black" />
+
+                        <input type="password" wire:model="password"
+                            class="w-full mt-2 rounded-md border-2 border-black bg-blue-50 text-black px-3 py-2 shadow-sm focus:ring-0 focus:outline-none focus:border-black" />
+
                         <flux:error name="password" class="text-red-600 font-medium text-xs mt-1" />
                     </flux:field>
                 </div>

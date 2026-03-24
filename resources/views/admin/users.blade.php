@@ -24,8 +24,5 @@
 
         {{-- Tabla de Usuarios --}}
         @include('admin.users.partials.table')
-
-        <livewire:create-user />
-
     </div>
 </x-layouts::app>

@@ -40,13 +40,16 @@ class UserController extends Controller
 
         $request->validate($rules, $messages);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'needs_password_change' => true,
         ]);
 
-        return back()->with('status', '¡Usuario creado con éxito!');
+        \Illuminate\Support\Facades\Mail::to($user->email)->queue(new \App\Mail\WelcomeUserMail($user, $request->password));
+
+        return back()->with('status', '¡Usuario creado y correo encolado con éxito!');
     }
 
     public function updateRoles(Request $request, User $user)

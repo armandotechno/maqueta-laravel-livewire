@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire; // Ajusta el namespace si lo guardas en otra subcarpeta
+namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Persona;
@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+// NUEVAS IMPORTACIONES PARA EL CORREO
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeUserMail;
 
 class CreateUser extends Component
 {
@@ -36,7 +39,6 @@ class CreateUser extends Component
 
     public function limpiarCampos()
     {
-        // Limpiamos la data de la persona
         $this->primer_nombre = '';
         $this->segundo_nombre = '';
         $this->primer_apellido = '';
@@ -46,20 +48,14 @@ class CreateUser extends Component
         $this->fecha_nacimiento = null;
         $this->sexo = null;
         $this->sexo_completo = '';
-
-        // ¡CLAVE! Volvemos a bloquear el botón de guardar por seguridad
         $this->isFound = false;
     }
 
     public function buscarCedula()
     {
-        // 1. Limpiamos los mensajes de la pantalla
         session()->forget(['error', 'status']);
-
-        // 2. ¡EL TRUCO! Limpiamos todos los campos ANTES de hacer la nueva búsqueda
         $this->limpiarCampos();
 
-        // Validamos que la cédula no esté vacía
         if (empty($this->cedula) || !ctype_digit($this->cedula)) {
             session()->flash('error', 'Ingrese un número de cédula válido.');
             return;
@@ -68,14 +64,12 @@ class CreateUser extends Component
         $this->loading = true;
         $cedulaCompleta = $this->nacionalidad . '-' . $this->cedula;
 
-        // Revisamos primero nuestra base de datos
         if (Persona::where('cedula', $cedulaCompleta)->exists()) {
             $this->loading = false;
             session()->flash('error', 'El usuario con esta cédula ya se encuentra registrado en el sistema.');
             return;
         }
 
-        // Procedemos a consultar la API
         try {
             $response = Http::withOptions(['verify' => false])->get("https://apicedulas.mppre.gob.ve/personas/cedulanac/{$cedulaCompleta}");
 
@@ -86,17 +80,15 @@ class CreateUser extends Component
                     $datosPersona = $data['response'];
                     $fechaNacimientoLocal = $datosPersona['fecha_nac'] ?? null;
 
-                    // Validamos la edad
                     if ($fechaNacimientoLocal) {
                         $edad = \Carbon\Carbon::parse($fechaNacimientoLocal)->age;
 
                         if ($edad < 18) {
                             session()->flash('error', 'La persona debe ser mayor de edad (tiene ' . $edad . ' años).');
-                            return; // Ya limpiamos los campos arriba, así que solo salimos
+                            return;
                         }
                     }
 
-                    // Si pasa todo, llenamos los campos
                     $this->primer_nombre = $datosPersona['primer_nombre'] ?? '';
                     $this->segundo_nombre = $datosPersona['segundo_nombre'] ?? '';
                     $this->primer_apellido = $datosPersona['primer_apellido'] ?? '';
@@ -116,7 +108,6 @@ class CreateUser extends Component
                         $this->sexo_completo = 'No definido';
                     }
 
-                    // Encendemos el botón de guardar
                     $this->isFound = true;
                     session()->flash('status', 'Datos de identificación obtenidos correctamente.');
                 } else {
@@ -143,7 +134,7 @@ class CreateUser extends Component
 
         $rules = [
             'cedula' => 'required|numeric',
-            'email' => 'required|string|email:rfc,dns|min:6|max:255|unique:usuarios,email',
+            'email' => 'required|string|email:rfc,dns|min:6|max:255|unique:users,email', // OJO: Cambié 'usuarios' a 'users' asumiendo que tu tabla es 'users'
             'password' => 'required|string|min:8',
             'selectedRoles' => 'required|array|min:1',
             'selectedPermissions' => 'required|array|min:1',
@@ -163,7 +154,8 @@ class CreateUser extends Component
         $this->validate($rules, $messages);
 
         try {
-            DB::transaction(function () use ($cedulaFinal) {
+            // Guardamos el resultado de la transacción en la variable $nuevoUsuario
+            $nuevoUsuario = DB::transaction(function () use ($cedulaFinal) {
                 $fechaSQL = null;
                 if ($this->fecha_nacimiento) {
                     $fechaSQL = Carbon::createFromFormat('d-m-Y', $this->fecha_nacimiento)->format('Y-m-d');
@@ -185,6 +177,7 @@ class CreateUser extends Component
                     'name' => "{$this->primer_nombre} {$this->primer_apellido}",
                     'email' => $this->email,
                     'password' => Hash::make($this->password),
+                    'needs_password_change' => true, // <-- LA MARCA DE SEGURIDAD
                 ]);
 
                 if (!empty($this->selectedRoles)) {
@@ -194,12 +187,18 @@ class CreateUser extends Component
                 if (!empty($this->selectedPermissions)) {
                     $user->syncPermissions($this->selectedPermissions);
                 }
+
+                // Retornamos el usuario para usarlo fuera de la transacción
+                return $user;
             });
 
-            return redirect()->route('admin.users')->with('status', '¡Usuario creado con éxito!');
+            // ENVIAR EL CORREO A LA COLA
+            // Le enviamos el usuario recién creado y la clave en texto plano
+            Mail::to($nuevoUsuario->email)->queue(new WelcomeUserMail($nuevoUsuario, $this->password));
+
+            return redirect()->route('admin.users')->with('status', '¡Usuario creado y credenciales enviadas con éxito!');
         } catch (\Exception $e) {
             session()->flash('error', 'Error de sistema: ' . $e->getMessage());
-            // session()->flash('error', 'Ocurrió un error inesperado al procesar el registro. Por favor, contacte al administrador del sistema.');
         }
     }
 

@@ -16,7 +16,6 @@
                     placeholder="usuario@correo.com"
                     class="w-full mt-2 rounded-md bg-white border-2 border-black text-black placeholder-gray-400 px-3 py-2 shadow-sm focus:ring-0 focus:outline-none focus:border-black"
                     maxlength="50" />
-                <flux:error name="email" class="!text-white" />
             </flux:field>
 
             <flux:field>
@@ -24,13 +23,34 @@
                     {{-- Forzamos el label a blanco --}}
                     <flux:label class="font-bold !text-white text-sm uppercase">{{ __('Contraseña') }}</flux:label>
                 </div>
-                {{-- Input: Fondo blanco, texto negro sólido, icono visible --}}
+
                 <input name="password" type="password" required autocomplete="current-password"
                     :placeholder="__('Contraseña')" viewable {{-- Forzamos visibilidad de icono y colores --}}
                     class="w-full mt-2 rounded-md bg-white border-2 border-black text-black placeholder-gray-400 px-3 py-2 shadow-sm focus:ring-0 focus:outline-none focus:border-black"
                     x-on:input="$el.value = $el.value.replace(/[^a-zA-Z0-9@._-]/g, '')" maxlength="50" />
-                <flux:error name="password" class="!text-white" />
             </flux:field>
+
+            @if ($errors->has('email') || $errors->has('password'))
+                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition.opacity.duration.500ms
+                    class="mb-6 bg-white border-2 border-red-600 rounded-lg p-4 shadow-md flex items-center gap-3">
+
+                    <div class="flex-shrink-0 bg-red-100 p-2 rounded-full">
+                        <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-bold text-red-600 uppercase tracking-wide">
+                            Error de Autenticación
+                        </p>
+                        <p class="text-sm text-red-600 font-medium mt-1">
+                            Las credenciales ingresadas no coinciden con nuestros registros.
+                        </p>
+                    </div>
+                </div>
+            @endif
 
             <div class="flex items-center justify-center pt-2">
                 <flux:button type="submit"
